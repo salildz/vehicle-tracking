@@ -25,11 +25,13 @@ export class AuthController {
 
     const token = generateToken(user.id, user.role);
 
+    const { password: _, ...userWithoutPassword } = user.toJSON();
+
     return ResponseHelper.success(
       res,
       {
+        user: userWithoutPassword, // User objesini ekle
         token,
-        role: user.role,
       },
       "Login successful"
     );
