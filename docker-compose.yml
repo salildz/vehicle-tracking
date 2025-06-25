@@ -1,7 +1,6 @@
 version: "3.9"
 
 services:
-  # Database - Mevcut yapıyı koru
   db:
     image: postgres:16
     container_name: vehicle-tracking_db
@@ -17,7 +16,6 @@ services:
     networks:
       - vehicle_network
 
-  # Backend - Mevcut yapıyı koru ve genişlet
   server:
     build: ./server
     container_name: vehicle-tracking_backend
@@ -37,7 +35,6 @@ services:
     networks:
       - vehicle_network
 
-  # Frontend - Yeni eklenen
   client:
     build: ./client
     container_name: vehicle-tracking_frontend
