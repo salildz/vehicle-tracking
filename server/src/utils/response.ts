@@ -34,20 +34,20 @@ export class ResponseHelper {
     return this.success(res, data, message, 201);
   }
 
-  static paginated<T>(
-    res: Response,
-    data: T[],
-    total: number,
-    page: number,
-    limit: number,
-    message?: string
-  ): Response {
-    return this.success(res, data, message, 200, {
-      pagination: {
-        page,
-        limit,
+  static paginated(res: any, data: any[], total: number, page: number, limit: number, message?: string) {
+    return res.json({
+      success: true,
+      data,
+      message,
+      meta: {
+        pagination: {
+          page,
+          limit,
+          total,
+          pages: Math.ceil(total / limit),
+        },
         total,
-        pages: Math.ceil(total / limit),
+        timestamp: new Date().toISOString(),
       },
     });
   }

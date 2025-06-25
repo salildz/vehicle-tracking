@@ -27,6 +27,7 @@ import {
     DirectionsCar as CarsIcon,
     MyLocation as TrackingIcon,
     Analytics as AnalyticsIcon,
+    Route as RouteIcon,
     AccountCircle,
     Logout,
     Settings,
@@ -65,6 +66,12 @@ const menuItems = [
         icon: <TrackingIcon />,
         path: '/live-tracking',
         description: 'Gerçek Zamanlı Konum'
+    },
+    {
+        label: 'Rota Geçmişi',
+        path: '/route-history',
+        icon: <RouteIcon />,
+        roles: ['admin', 'operator']
     },
     {
         text: 'Analitik',

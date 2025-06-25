@@ -11,7 +11,6 @@ import {
     IconButton,
     CircularProgress,
     Container,
-    useTheme,
 } from '@mui/material';
 import {
     Email as EmailIcon,
@@ -23,14 +22,13 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 const LoginPage: React.FC = () => {
-    const theme = useTheme();
     const navigate = useNavigate();
     const { login } = useAuth();
 
     const [showPassword, setShowPassword] = useState(false);
     const [formData, setFormData] = useState({
-        email: 'admin@admin.com',
-        password: 'admin123',
+        email: '',
+        password: '',
     });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -194,27 +192,6 @@ const LoginPage: React.FC = () => {
                                 )}
                             </Button>
                         </form>
-
-                        {/* Demo Credentials */}
-                        <Box
-                            sx={{
-                                mt: 3,
-                                p: 2,
-                                backgroundColor: theme.palette.background.default,
-                                borderRadius: 2,
-                                textAlign: 'center'
-                            }}
-                        >
-                            <Typography variant="body2" color="text.secondary" gutterBottom>
-                                <strong>Demo Hesap Bilgileri:</strong>
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                Email: admin@admin.com
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                Şifre: admin123
-                            </Typography>
-                        </Box>
                     </CardContent>
                 </Card>
             </Container>

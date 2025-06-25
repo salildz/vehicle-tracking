@@ -16,13 +16,23 @@ router.post(
   AuthController.login
 );
 
+router.post(
+  "/refresh",
+  [body("refreshToken").notEmpty().withMessage("Refresh token is required")],
+  validate,
+  AuthController.refreshToken
+);
+
+router.post("/logout", AuthController.logout);
+
 // Register route with validation
 router.post(
   "/register",
   [
     body("email").isEmail().withMessage("Valid email is required"),
     body("password").isLength({ min: 6 }).withMessage("Password must be at least 6 characters"),
-    body("role").optional().isIn(["admin", "operator", "viewer"]).withMessage("Invalid role"),
+    body("firstName").notEmpty().withMessage("First name is required"),
+    body("lastName").notEmpty().withMessage("Last name is required"),
   ],
   validate,
   AuthController.register

@@ -24,6 +24,7 @@ import DriversPage from './pages/DriversPage';
 import VehiclesPage from './pages/VehiclesPage';
 import LiveTrackingPage from './pages/LiveTrackingPage';
 import AnalyticsPage from './pages/AnalyticsPage';
+import RouteHistoryPage from './pages/RouteHistoryPage';
 
 // Global styles
 const globalStyles = (
@@ -114,6 +115,17 @@ function App() {
                       </PrivateRoute>
                     }
                   />
+                  <Route
+                    path="/route-history"
+                    element={
+                      <PrivateRoute>
+                        <DashboardLayout>
+                          <RouteHistoryPage />
+                        </DashboardLayout>
+                      </PrivateRoute>
+                    }
+                  />
+
 
                   {/* Fallback */}
                   <Route path="*" element={<Navigate to="/" replace />} />

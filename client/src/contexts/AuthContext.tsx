@@ -29,22 +29,45 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setLoading(true);
         setError(null);
 
-        // Sayfa yüklendiğinde token ve user bilgilerini kontrol et
-        const savedToken = authService.getToken();
+        const savedToken = authService.getAccessToken();
         const savedUser = authService.getCurrentUser();
+        const refreshToken = authService.getRefreshToken();
 
-        if (savedToken && savedUser) {
-          setToken(savedToken);
-          setUser(savedUser);
+        if (savedToken && savedUser && refreshToken) {
+          // Token expire olmuş mu kontrol et
+          if (authService.isTokenExpired(savedToken)) {
+            try {
+              console.log('Token expired, attempting refresh...');
+              // Token refresh et
+              const refreshResult = await authService.refreshToken();
+              setUser(refreshResult.user);
+              setToken(refreshResult.accessToken);
+              console.log('Token refresh successful');
+            } catch (refreshError) {
+              // Refresh başarısızsa logout
+              console.error('Initial token refresh failed:', refreshError);
+              await authService.logout();
+              setUser(null);
+              setToken(null);
+            }
+          } else {
+            // Token geçerliyse direkt set et
+            console.log('Token is valid, setting user');
+            setUser(savedUser);
+            setToken(savedToken);
+          }
         } else {
-          // Eğer token veya user eksikse, her ikisini de temizle
-          authService.logout();
+          // Token yoksa logout state'inde kal
+          console.log('No valid tokens found');
+          setUser(null);
+          setToken(null);
         }
       } catch (error) {
         console.error('Auth initialization error:', error);
         setError('Authentication initialization failed');
-        // Hatalı durumda localStorage'ı temizle
-        authService.logout();
+        await authService.logout();
+        setUser(null);
+        setToken(null);
       } finally {
         setLoading(false);
       }
@@ -58,10 +81,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setLoading(true);
       setError(null);
 
-      const { user, token } = await authService.login(email, password);
-      setUser(user);
-      setToken(token);
+      console.log('Attempting login...');
+      const loginResult = await authService.login(email, password);
+
+      setUser(loginResult.user);
+      setToken(loginResult.accessToken);
+
+      console.log('Login successful:', loginResult.user.email);
     } catch (error: any) {
+      console.error('Login error:', error);
       setError(error.message || 'Login failed');
       throw error;
     } finally {
@@ -69,14 +97,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
     try {
-      authService.logout();
+      setLoading(true);
+      console.log('Logging out...');
+
+      await authService.logout();
       setUser(null);
       setToken(null);
       setError(null);
+
+      console.log('Logout successful');
     } catch (error) {
       console.error('Logout error:', error);
+      // Logout hatası olsa bile state'i temizle
+      setUser(null);
+      setToken(null);
+      setError(null);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -87,12 +126,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     logout,
     isAuthenticated: !!user && !!token,
     loading,
+    error, // Error'u da context'e ekle
   };
-
-  // Error varsa konsola yazdır ama uygulamayı çökertme
-  if (error) {
-    console.error('Auth Context Error:', error);
-  }
 
   return (
     <AuthContext.Provider value={value}>

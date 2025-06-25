@@ -264,9 +264,6 @@ const LiveTrackingPage: React.FC = () => {
             {/* Header */}
             <Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider' }}>
                 <Box display="flex" justifyContent="space-between" alignItems="center">
-                    <Typography variant="h6" fontWeight={600}>
-                        Canlı Takip
-                    </Typography>
                     {isMobile && (
                         <IconButton onClick={() => setSidebarOpen(false)}>
                             <CloseIcon />
