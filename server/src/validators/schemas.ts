@@ -34,18 +34,6 @@ export const driverSchemas = {
       .matches(/^(\+90|0)?[5][0-9]{9}$/)
       .withMessage("Valid Turkish phone number required"),
     body("email").optional().isEmail().normalizeEmail(),
-    body("licenseNumber")
-      .isLength({ min: 6, max: 20 })
-      .matches(/^[A-Z0-9]+$/)
-      .withMessage("License number must be alphanumeric uppercase"),
-    body("licenseExpiryDate")
-      .isISO8601()
-      .custom((value) => {
-        if (new Date(value) <= new Date()) {
-          throw new Error("License expiry date must be in the future");
-        }
-        return true;
-      }),
   ],
 
   update: [

@@ -60,8 +60,6 @@ interface DriverFormData {
     lastName: string;
     phone: string;
     email: string;
-    licenseNumber: string;
-    licenseExpiryDate: string;
 }
 
 const DriversPage: React.FC = () => {
@@ -84,9 +82,7 @@ const DriversPage: React.FC = () => {
         firstName: '',
         lastName: '',
         phone: '',
-        email: '',
-        licenseNumber: '',
-        licenseExpiryDate: '',
+        email: ''
     });
     const [formLoading, setFormLoading] = useState(false);
     const [formError, setFormError] = useState<string | null>(null);
@@ -122,8 +118,6 @@ const DriversPage: React.FC = () => {
                 lastName: driver.lastName,
                 phone: driver.phone,
                 email: driver.email || '',
-                licenseNumber: driver.licenseNumber,
-                licenseExpiryDate: dayjs(driver.licenseExpiryDate).format('YYYY-MM-DD'),
             });
         } else {
             setEditingDriver(null);
@@ -132,9 +126,7 @@ const DriversPage: React.FC = () => {
                 firstName: '',
                 lastName: '',
                 phone: '',
-                email: '',
-                licenseNumber: '',
-                licenseExpiryDate: '',
+                email: ''
             });
         }
         setFormError(null);
@@ -202,17 +194,6 @@ const DriversPage: React.FC = () => {
         page * rowsPerPage + rowsPerPage
     );
 
-    const isLicenseExpiringSoon = (expiryDate: string) => {
-        const today = dayjs();
-        const expiry = dayjs(expiryDate);
-        const daysUntilExpiry = expiry.diff(today, 'day');
-        return daysUntilExpiry <= 30 && daysUntilExpiry >= 0;
-    };
-
-    const isLicenseExpired = (expiryDate: string) => {
-        return dayjs(expiryDate).isBefore(dayjs());
-    };
-
     if (loading) {
         return (
             <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
@@ -223,16 +204,6 @@ const DriversPage: React.FC = () => {
 
     return (
         <Box>
-            {/* Page Header */}
-            <Box mb={4}>
-                <Typography variant="h4" gutterBottom fontWeight={700}>
-                    Sürücü Yönetimi
-                </Typography>
-                <Typography variant="body1" color="text.secondary">
-                    Sürücü kayıtlarını yönetin, yeni sürücü ekleyin ve bilgileri güncelleyin
-                </Typography>
-            </Box>
-
             {/* Error Alert */}
             {error && (
                 <Alert severity="error" sx={{ mb: 3 }} onClose={() => setError(null)}>
@@ -276,46 +247,6 @@ const DriversPage: React.FC = () => {
                                 </Box>
                                 <Avatar sx={{ bgcolor: 'success.light', width: 48, height: 48 }}>
                                     <ActiveIcon />
-                                </Avatar>
-                            </Box>
-                        </CardContent>
-                    </Card>
-                </Grid>
-
-                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                    <Card>
-                        <CardContent>
-                            <Box display="flex" alignItems="center" justifyContent="space-between">
-                                <Box>
-                                    <Typography variant="h4" color="warning.main" fontWeight={700}>
-                                        {drivers.filter(d => isLicenseExpiringSoon(d.licenseExpiryDate)).length}
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        Ehliyet Süresi Dolacak
-                                    </Typography>
-                                </Box>
-                                <Avatar sx={{ bgcolor: 'warning.light', width: 48, height: 48 }}>
-                                    <CalendarIcon />
-                                </Avatar>
-                            </Box>
-                        </CardContent>
-                    </Card>
-                </Grid>
-
-                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                    <Card>
-                        <CardContent>
-                            <Box display="flex" alignItems="center" justifyContent="space-between">
-                                <Box>
-                                    <Typography variant="h4" color="error.main" fontWeight={700}>
-                                        {drivers.filter(d => isLicenseExpired(d.licenseExpiryDate)).length}
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        Ehliyet Süresi Dolmuş
-                                    </Typography>
-                                </Box>
-                                <Avatar sx={{ bgcolor: 'error.light', width: 48, height: 48 }}>
-                                    <BlockIcon />
                                 </Avatar>
                             </Box>
                         </CardContent>
@@ -392,12 +323,6 @@ const DriversPage: React.FC = () => {
                                                     color={driver.isActive ? 'success' : 'default'}
                                                     size="small"
                                                 />
-                                                {isLicenseExpired(driver.licenseExpiryDate) && (
-                                                    <Chip label="Ehliyet Süresi Dolmuş" color="error" size="small" />
-                                                )}
-                                                {isLicenseExpiringSoon(driver.licenseExpiryDate) && !isLicenseExpired(driver.licenseExpiryDate) && (
-                                                    <Chip label="Ehliyet Süresi Dolacak" color="warning" size="small" />
-                                                )}
                                             </Box>
                                         </Box>
                                     </Box>
@@ -418,7 +343,6 @@ const DriversPage: React.FC = () => {
                                 <TableCell>Sürücü</TableCell>
                                 <TableCell>İletişim</TableCell>
                                 <TableCell>RFID Kart</TableCell>
-                                <TableCell>Ehliyet</TableCell>
                                 <TableCell>Durum</TableCell>
                                 <TableCell align="center">İşlemler</TableCell>
                             </TableRow>
@@ -467,39 +391,11 @@ const DriversPage: React.FC = () => {
                                     </TableCell>
 
                                     <TableCell>
-                                        <Box>
-                                            <Typography variant="body2" fontWeight={500}>
-                                                {driver.licenseNumber}
-                                            </Typography>
-                                            <Typography
-                                                variant="caption"
-                                                color={
-                                                    isLicenseExpired(driver.licenseExpiryDate)
-                                                        ? 'error'
-                                                        : isLicenseExpiringSoon(driver.licenseExpiryDate)
-                                                            ? 'warning.main'
-                                                            : 'text.secondary'
-                                                }
-                                            >
-                                                {dayjs(driver.licenseExpiryDate).format('DD.MM.YYYY')}
-                                            </Typography>
-                                        </Box>
-                                    </TableCell>
-
-                                    <TableCell>
-                                        <Box display="flex" flexDirection="column" gap={0.5}>
-                                            <Chip
-                                                label={driver.isActive ? 'Aktif' : 'Pasif'}
-                                                color={driver.isActive ? 'success' : 'default'}
-                                                size="small"
-                                            />
-                                            {isLicenseExpired(driver.licenseExpiryDate) && (
-                                                <Chip label="Süresi Dolmuş" color="error" size="small" />
-                                            )}
-                                            {isLicenseExpiringSoon(driver.licenseExpiryDate) && !isLicenseExpired(driver.licenseExpiryDate) && (
-                                                <Chip label="Süresi Dolacak" color="warning" size="small" />
-                                            )}
-                                        </Box>
+                                        <Chip
+                                            label={driver.isActive ? 'Aktif' : 'Pasif'}
+                                            color={driver.isActive ? 'success' : 'default'}
+                                            size="small"
+                                        />
                                     </TableCell>
 
                                     <TableCell align="center">
@@ -627,23 +523,6 @@ const DriversPage: React.FC = () => {
                             <Grid size={{ xs: 12, sm: 6 }}>
                                 <TextField
                                     fullWidth
-                                    label="Ehliyet Numarası"
-                                    value={formData.licenseNumber}
-                                    onChange={(e) => setFormData({ ...formData, licenseNumber: e.target.value })}
-                                    required
-                                    InputProps={{
-                                        startAdornment: (
-                                            <InputAdornment position="start">
-                                                <LicenseIcon />
-                                            </InputAdornment>
-                                        ),
-                                    }}
-                                />
-                            </Grid>
-
-                            <Grid size={{ xs: 12, sm: 6 }}>
-                                <TextField
-                                    fullWidth
                                     label="Ad"
                                     value={formData.firstName}
                                     onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
@@ -695,26 +574,7 @@ const DriversPage: React.FC = () => {
                                 />
                             </Grid>
 
-                            <Grid size={12}>
-                                <TextField
-                                    fullWidth
-                                    label="Ehliyet Son Kullanma Tarihi"
-                                    type="date"
-                                    value={formData.licenseExpiryDate}
-                                    onChange={(e) => setFormData({ ...formData, licenseExpiryDate: e.target.value })}
-                                    required
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
-                                    InputProps={{
-                                        startAdornment: (
-                                            <InputAdornment position="start">
-                                                <CalendarIcon />
-                                            </InputAdornment>
-                                        ),
-                                    }}
-                                />
-                            </Grid>
+
                         </Grid>
                     </DialogContent>
 

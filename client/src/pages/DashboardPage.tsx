@@ -104,16 +104,6 @@ const DashboardPage: React.FC = () => {
 
     return (
         <Box>
-            {/* Page Header */}
-            <Box mb={4}>
-                <Typography variant="h4" gutterBottom fontWeight={700}>
-                    Dashboard
-                </Typography>
-                <Typography variant="body1" color="text.secondary">
-                    Araç takip sistemi genel bakış
-                </Typography>
-            </Box>
-
             {/* Stats Cards Grid */}
             <Grid container spacing={3} mb={4}>
                 {/* Total Drivers */}

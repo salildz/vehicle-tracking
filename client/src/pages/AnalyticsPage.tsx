@@ -196,16 +196,6 @@ const AnalyticsPage: React.FC = () => {
 
     return (
         <Box>
-            {/* Page Header */}
-            <Box mb={4}>
-                <Typography variant="h4" gutterBottom fontWeight={700}>
-                    Analytics & Raporlar
-                </Typography>
-                <Typography variant="body1" color="text.secondary">
-                    Detaylı analiz ve raporlama araçları
-                </Typography>
-            </Box>
-
             {/* Error Alert */}
             {error && (
                 <Alert severity="error" sx={{ mb: 3 }} onClose={() => setError(null)}>
@@ -543,7 +533,7 @@ const AnalyticsPage: React.FC = () => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {sessionHistory.map((session) => (
+                                {sessionHistory?.map((session) => (
                                     <TableRow key={session.id} hover>
                                         <TableCell>#{session.id}</TableCell>
                                         <TableCell>

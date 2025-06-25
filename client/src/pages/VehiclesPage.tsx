@@ -237,16 +237,6 @@ const VehiclesPage: React.FC = () => {
 
     return (
         <Box>
-            {/* Page Header */}
-            <Box mb={4}>
-                <Typography variant="h4" gutterBottom fontWeight={700}>
-                    Araç Yönetimi
-                </Typography>
-                <Typography variant="body1" color="text.secondary">
-                    Araç kayıtlarını yönetin, yeni araç ekleyin ve ESP32 cihaz bağlantılarını yapılandırın
-                </Typography>
-            </Box>
-
             {/* Error Alert */}
             {error && (
                 <Alert severity="error" sx={{ mb: 3 }} onClose={() => setError(null)}>

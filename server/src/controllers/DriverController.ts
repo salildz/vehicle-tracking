@@ -30,7 +30,7 @@ export class DriverController {
   // Yeni sürücü ekle
   static async create(req: Request, res: Response) {
     try {
-      const { rfidCardId, firstName, lastName, phone, email, licenseNumber, licenseExpiryDate } = req.body;
+      const { rfidCardId, firstName, lastName, phone, email } = req.body;
 
       const driver = await Driver.create({
         rfidCardId,
@@ -38,8 +38,6 @@ export class DriverController {
         lastName,
         phone,
         email,
-        licenseNumber,
-        licenseExpiryDate: new Date(licenseExpiryDate),
         isActive: true,
       });
 
@@ -152,7 +150,8 @@ export class DriverController {
       const totalDistance = sessions.reduce((sum, session) => sum + session.totalDistance, 0);
       const totalHours = sessions.reduce((sum, session) => {
         if (session.endTime) {
-          const duration = (new Date(session.endTime).getTime() - new Date(session.startTime).getTime()) / (1000 * 60 * 60);
+          const duration =
+            (new Date(session.endTime).getTime() - new Date(session.startTime).getTime()) / (1000 * 60 * 60);
           return sum + duration;
         }
         return sum;

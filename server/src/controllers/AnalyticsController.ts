@@ -224,7 +224,7 @@ export class AnalyticsController {
         {
           model: Driver,
           as: "driver",
-          attributes: ["firstName", "lastName", "licenseNumber"],
+          attributes: ["firstName", "lastName"],
         },
         {
           model: Vehicle,
@@ -259,7 +259,7 @@ export class AnalyticsController {
         {
           model: Driver,
           as: "driver",
-          attributes: ["firstName", "lastName", "licenseNumber"],
+          attributes: ["firstName", "lastName"],
         },
         {
           model: Vehicle,

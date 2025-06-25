@@ -9,8 +9,6 @@ export class Driver extends Model {
   public phone!: string;
   public email!: string;
   public isActive!: boolean;
-  public licenseNumber!: string;
-  public licenseExpiryDate!: Date;
   public createdAt!: Date;
   public updatedAt!: Date;
 }
@@ -24,8 +22,6 @@ Driver.init(
     phone: { type: DataTypes.STRING, allowNull: false },
     email: { type: DataTypes.STRING, allowNull: true },
     isActive: { type: DataTypes.BOOLEAN, defaultValue: true },
-    licenseNumber: { type: DataTypes.STRING, allowNull: false, unique: true },
-    licenseExpiryDate: { type: DataTypes.DATE, allowNull: false },
   },
   {
     sequelize,

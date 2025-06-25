@@ -127,10 +127,10 @@ const startServer = async () => {
 
     // Start server
     httpServer.listen(PORT, () => {
-      logger.info(`🚀 Server running on http://localhost:${PORT}`);
-      logger.info(`📊 Environment: ${process.env.NODE_ENV || "development"}`);
-      logger.info(`🔒 Security headers enabled`);
-      logger.info(`⚡ Rate limiting active`);
+      logger.info(`Server running on http://localhost:${PORT}`);
+      logger.info(`Environment: ${process.env.NODE_ENV || "development"}`);
+      logger.info(`Security headers enabled`);
+      logger.info(`Rate limiting active`);
     });
   } catch (error) {
     logger.error("Failed to start server:", error);

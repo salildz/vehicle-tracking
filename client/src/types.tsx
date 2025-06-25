@@ -13,8 +13,6 @@ export interface Driver {
   lastName: string;
   phone: string;
   email?: string;
-  licenseNumber: string;
-  licenseExpiryDate: string;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;

@@ -21,8 +21,6 @@ router.post(
     body("firstName").notEmpty().withMessage("First name is required"),
     body("lastName").notEmpty().withMessage("Last name is required"),
     body("phone").notEmpty().withMessage("Phone is required"),
-    body("licenseNumber").notEmpty().withMessage("License number is required"),
-    body("licenseExpiryDate").isISO8601().withMessage("Valid expiry date is required"),
   ],
   validate,
   DriverController.create

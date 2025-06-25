@@ -6,7 +6,7 @@ import { Request, Response, NextFunction } from "express";
 // Rate limiting configurations
 export const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // 5 attempts per window
+  max: 50, // 5 attempts per window
   message: {
     success: false,
     message: "Too many authentication attempts, please try again later",
@@ -18,7 +18,7 @@ export const authLimiter = rateLimit({
 
 export const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // 100 requests per window
+  max: 1000, // 100 requests per window
   message: {
     success: false,
     message: "Too many requests, please try again later",
@@ -30,7 +30,7 @@ export const apiLimiter = rateLimit({
 
 export const deviceLimiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
-  max: 60, // 60 GPS updates per minute
+  max: 600, // 60 GPS updates per minute
   message: {
     success: false,
     message: "Too many location updates, please slow down",
@@ -45,7 +45,7 @@ export const deviceLimiter = rateLimit({
 // Fixed speed limiter - uyarıyı gidermek için
 export const speedLimiter = slowDown({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  delayAfter: 50, // Allow 50 requests per window without delay
+  delayAfter: 500, // Allow 50 requests per window without delay
   delayMs: () => 500, // Fixed: Function instead of number
   maxDelayMs: 20000, // Maximum delay of 20 seconds
   validate: { delayMs: false }, // Disable warning
