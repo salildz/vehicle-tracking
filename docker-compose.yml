@@ -6,7 +6,7 @@ services:
     container_name: vehicle-tracking_db
     restart: always
     ports:
-      - "5432:5432"
+      - "15432:5432"
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}

@@ -1,54 +1,46 @@
 import { Router } from "express";
 import { DeviceController } from "../controllers/DeviceController";
-import { body } from "express-validator";
+import { body, param } from "express-validator";
 import { validate } from "../middlewares/validation.middleware";
+import { deviceLimiter } from "../middlewares/security.middleware";
 
 const router = Router();
 
-// RFID kartı doğrula
+// ANA ENDPOINT - GPS verisi + RFID
 router.post(
-  "/validate-rfid",
+  "/gps-data",
+  deviceLimiter, // Rate limiting for device requests
   [
-    body("rfidCardId").notEmpty().withMessage("RFID card ID is required"),
     body("deviceId").notEmpty().withMessage("Device ID is required"),
+    body("latitude").isFloat({ min: -90, max: 90 }).withMessage("Valid latitude is required"),
+    body("longitude").isFloat({ min: -180, max: 180 }).withMessage("Valid longitude is required"),
+    body("speed").optional().isFloat({ min: 0 }).withMessage("Speed must be a positive number"),
+    body("heading").optional().isFloat({ min: 0, max: 360 }).withMessage("Heading must be between 0-360"),
+    body("accuracy").optional().isFloat({ min: 0 }).withMessage("Accuracy must be positive"),
+    body("rfidCardId").optional().isString().withMessage("RFID card ID must be string"),
+    body("timestamp").optional().isISO8601().withMessage("Timestamp must be valid ISO8601 date"),
   ],
   validate,
-  DeviceController.validateRfid
+  DeviceController.receiveGPSData
 );
 
-// Sürüş oturumunu başlat
+//  ADMIN ENDPOINTS
+router.get("/active-sessions", DeviceController.getActiveSessions);
+
 router.post(
-  "/start-session",
+  "/force-end-session/:sessionId",
   [
-    body("driverId").isInt().withMessage("Driver ID must be an integer"),
-    body("vehicleId").isInt().withMessage("Vehicle ID must be an integer"),
-    body("location").isObject().withMessage("Location must be an object"),
+    param("sessionId").isInt().withMessage("Valid session ID is required"),
+    body("reason").optional().isString().withMessage("Reason must be string"),
   ],
   validate,
-  DeviceController.startSession
+  DeviceController.forceEndSession
 );
 
-// GPS konumunu kaydet
-router.post(
-  "/log-location",
-  [
-    body("sessionId").isInt().withMessage("Session ID must be an integer"),
-    body("latitude").isFloat().withMessage("Latitude must be a valid number"),
-    body("longitude").isFloat().withMessage("Longitude must be a valid number"),
-  ],
-  validate,
-  DeviceController.logLocation
-);
-
-// Sürüş oturumunu sonlandır
-router.post(
-  "/end-session",
-  [
-    body("sessionId").isInt().withMessage("Session ID must be an integer"),
-    body("location").isObject().withMessage("Location must be an object"),
-  ],
-  validate,
-  DeviceController.endSession
-);
+// LEGACY ENDPOINTS (Deprecated but kept for backward compatibility)
+router.post("/validate-rfid", DeviceController.validateRfid);
+router.post("/start-session", DeviceController.startSession);
+router.post("/log-location", DeviceController.logLocation);
+router.post("/end-session", DeviceController.endSession);
 
 export default router;

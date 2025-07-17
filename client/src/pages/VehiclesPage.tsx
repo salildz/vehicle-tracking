@@ -176,7 +176,8 @@ const VehiclesPage: React.FC = () => {
             await loadActiveSessions();
             handleCloseDialog();
         } catch (err: any) {
-            setFormError(err.message || 'İşlem başarısız');
+            //setFormError(err.message || 'İşlem başarısız');
+            setFormError("Temel araç bilgileri benzersiz olmalıdır");
         } finally {
             setFormLoading(false);
         }

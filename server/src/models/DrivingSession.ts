@@ -3,7 +3,7 @@ import { sequelize } from "../config/database";
 
 export class DrivingSession extends Model {
   public id!: number;
-  public driverId!: number;
+  public driverId!: number | null;
   public vehicleId!: number;
   public startTime!: Date;
   public endTime!: Date | null;
@@ -11,10 +11,11 @@ export class DrivingSession extends Model {
   public endLocation!: object | null;
   public totalDistance!: number;
   public isActive!: boolean;
+  public sessionType!: "authorized" | "unauthorized" | "idle";
+  public lastHeartbeat!: Date;
   public createdAt!: Date;
   public updatedAt!: Date;
 
-  // Association declarations - bunları ekle
   public driver?: any;
   public vehicle?: any;
   public locations?: any[];
@@ -29,7 +30,7 @@ DrivingSession.init(
     },
     driverId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       references: {
         model: "drivers",
         key: "id",
@@ -57,17 +58,8 @@ DrivingSession.init(
       allowNull: false,
       validate: {
         isValidLocation(value: any) {
-          if (!value.latitude || !value.longitude) {
-            throw new Error("Location must contain latitude and longitude");
-          }
-          if (typeof value.latitude !== "number" || typeof value.longitude !== "number") {
-            throw new Error("Coordinates must be numbers");
-          }
-          if (value.latitude < -90 || value.latitude > 90) {
-            throw new Error("Latitude must be between -90 and 90");
-          }
-          if (value.longitude < -180 || value.longitude > 180) {
-            throw new Error("Longitude must be between -180 and 180");
+          if (!value || typeof value.latitude !== "number" || typeof value.longitude !== "number") {
+            throw new Error("Start location must have valid latitude and longitude");
           }
         },
       },
@@ -87,6 +79,16 @@ DrivingSession.init(
       type: DataTypes.BOOLEAN,
       defaultValue: true,
       allowNull: false,
+    },
+    sessionType: {
+      type: DataTypes.ENUM("authorized", "unauthorized", "idle"),
+      allowNull: false,
+      defaultValue: "idle",
+    },
+    lastHeartbeat: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
     },
   },
   {
@@ -112,12 +114,20 @@ DrivingSession.init(
         name: "idx_driving_sessions_start_time",
       },
       {
-        fields: ["driverId", "isActive"],
-        name: "idx_driving_sessions_driver_active",
+        fields: ["sessionType"],
+        name: "idx_driving_sessions_session_type",
+      },
+      {
+        fields: ["lastHeartbeat"],
+        name: "idx_driving_sessions_last_heartbeat",
       },
       {
         fields: ["vehicleId", "isActive"],
         name: "idx_driving_sessions_vehicle_active",
+      },
+      {
+        fields: ["driverId", "isActive"],
+        name: "idx_driving_sessions_driver_active",
       },
     ],
   }

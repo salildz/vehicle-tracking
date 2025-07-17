@@ -11,7 +11,7 @@ const api = axios.create({
 
 let isRefreshing = false;
 let refreshSubscribers: Array<(token: string) => void> = [];
-let retryCount = 0; // ✅ Retry counter ekle
+let retryCount = 0;
 
 const onRefreshed = (token: string) => {
   refreshSubscribers.forEach(callback => callback(token));
