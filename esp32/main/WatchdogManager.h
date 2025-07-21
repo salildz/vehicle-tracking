@@ -7,7 +7,7 @@ public:
     : _timeout(timeoutSeconds) {}
 
   void begin() {
-    esp_task_wdt_deinit();  // Eski watchdog'u iptal et
+    esp_task_wdt_deinit(); 
     esp_task_wdt_config_t config = {
       .timeout_ms = _timeout * 1000,
       .idle_core_mask = (1 << portNUM_PROCESSORS) - 1,

@@ -21,23 +21,23 @@ public:
     return _gps.location.isValid();
   }
 
-  double latitude() const {
+  double latitude()  {
     return _gps.location.lat();
   }
 
-  double longitude() const {
+  double longitude() {
     return _gps.location.lng();
   }
 
-  float speed() const {
+  float speed() {
     return _gps.speed.kmph();
   }
 
-  float heading() const {
+  float heading() {
     return _gps.course.deg();
   }
 
-  float accuracy() const {
+  float accuracy() {
     return _gps.hdop.hdop();
   }
 
