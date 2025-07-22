@@ -3,30 +3,47 @@
 
 class WifiManager {
 public:
-  static bool begin(const char* ssid, const char* pass) {
+  WifiManager(const char* ssid, const char* password)
+    : _ssid(ssid), _password(password) {}
+
+  bool connect(uint32_t timeoutMs = 10000) {
     WiFi.mode(WIFI_STA);
-    WiFi.disconnect(true);
-    delay(100);
-    Serial.printf("Wi-Fi starting: %s\n", ssid);
-    WiFi.begin(ssid, pass);
-    unsigned long t0 = millis();
-    while (WiFi.status() != WL_CONNECTED) {
-      Serial.print('.');
-      delay(500);
-      if (millis() - t0 > 30000) {
-        Serial.println();
-        Serial.printf("Connection couldn't be established in %lus, status=%d\n",
-                      (millis()-t0)/1000, WiFi.status());
-        return false;
-      }
+    WiFi.begin(_ssid, _password);
+
+    unsigned long start = millis();
+    while (WiFi.status() != WL_CONNECTED && millis() - start < timeoutMs) {
+      delay(250);
     }
-    Serial.println("\nWi-Fi connected, IP=" + WiFi.localIP().toString());
-    return true;
+
+    return WiFi.status() == WL_CONNECTED;
   }
 
-  static bool ensureConnected(const char* ssid, const char* pass) {
-    if (WiFi.status() == WL_CONNECTED) return true;
-    Serial.println("Wi-Fi connection is broken, reconnecting.");
-    return begin(ssid, pass);
+  bool reconnect(uint8_t maxAttempts = 3, uint32_t delayMs = 3000) {
+    for (uint8_t attempt = 0; attempt < maxAttempts; ++attempt) {
+      if (connect()) return true;
+      delay(delayMs);
+    }
+    return false;
   }
+
+  bool isConnected() const {
+    return WiFi.status() == WL_CONNECTED;
+  }
+
+  String getIP() const {
+    return WiFi.localIP().toString();
+  }
+
+  int getRSSI() const {
+    return WiFi.RSSI();
+  }
+
+  void disconnect() {
+    WiFi.disconnect(true);
+    WiFi.mode(WIFI_OFF);
+  }
+
+private:
+  const char* _ssid;
+  const char* _password;
 };

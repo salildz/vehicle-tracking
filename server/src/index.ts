@@ -8,6 +8,7 @@ import { createServer } from "http";
 import { sequelize } from "./config/database";
 import { initializeSocket } from "./config/socket";
 import { logger } from "./config/logger";
+import { CleanupService } from "./services/cleanupService";
 
 // Models - Import to ensure associations are set up
 import "./models";
@@ -181,3 +182,5 @@ process.on("uncaughtException", (error) => {
 
 // Start the server
 startServer();
+
+CleanupService.start();

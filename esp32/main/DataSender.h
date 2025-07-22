@@ -1,59 +1,87 @@
 #pragma once
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
-#include <WiFi.h>
 
 class DataSender {
 public:
-  DataSender(const char* serverUrl) : _url(serverUrl) {}
+  struct ServerResponse {
+    bool success = false;
+    bool authorized = false;
+    String sessionId;
+    String driverName;
+    String message;
+  };
 
-  bool send(const String& uid, double lat, double lng) {
-    if (WiFi.status() != WL_CONNECTED) {
-      Serial.println("⚠️ HTTP Gönderme: Wi-Fi bağlı değil!");
-      return false;
-    }
+  DataSender(const String& serverUrl, const String& deviceId)
+    : _url(serverUrl), _deviceId(deviceId) {}
 
-    HTTPClient http;
-    Serial.printf("➡️ HTTP BEGIN: %s\n", _url);
-    if (!http.begin(_url)) {
-      Serial.println("⚠️ HTTP begin() başarısız!");
-      return false;
-    }
+  bool send(double lat, double lng, float speed, float heading, float accuracy,
+            const String& rfidCardId = "")
+  {
+    if (WiFi.status() != WL_CONNECTED) return false;
 
-    http.addHeader("Content-Type", "application/json");
-
-    StaticJsonDocument<200> doc;
-    doc["uid"]       = uid;
+    StaticJsonDocument<512> doc;
+    doc["deviceId"]  = _deviceId;
     doc["latitude"]  = lat;
     doc["longitude"] = lng;
+    doc["speed"]     = speed;
+    doc["heading"]   = heading;
+    doc["accuracy"]  = accuracy;
     doc["timestamp"] = millis();
-    String body;
-    serializeJson(doc, body);
-    Serial.printf("📤 POST BODY: %s\n", body.c_str());
 
-    int code = http.POST(body);
-    if (code > 0) {
-      Serial.printf("📥 HTTP response code: %d\n", code);
-      String resp = http.getString();
-      Serial.printf("📄 Response body: %s\n", resp.c_str());
+    if (rfidCardId.length() > 0)
+      doc["rfidCardId"] = rfidCardId;
 
-      if (code >= 200 && code < 300) {
-        Serial.println("✅ HTTP POST başarılı");
-        http.end();
-        return true;
-      } else {
-        Serial.println("❌ HTTP POST başarısız (sunucu hatası)");
-        http.end();
-        return false;
-      }
-    } else {
-      String err = http.errorToString(code);
-      Serial.printf("❌ HTTP POST hatası: %s (code=%d)\n", err.c_str(), code);
-      http.end();
-      return false;
-    }
+    String json;
+    serializeJson(doc, json);
+
+    bool success = sendRawJson(json);
+
+    return success;
+  }
+
+  ServerResponse getLastResponse() const {
+    return _last;
+  }
+
+  bool sendRawJson(const String& payload) {
+    HTTPClient http;
+    http.begin(_url);
+    http.addHeader("Content-Type", "application/json");
+
+    int statusCode = http.POST(payload);
+    String response = http.getString();
+    http.end();
+
+    return parseResponse(response, statusCode);
   }
 
 private:
-  const char* _url;
+  String _url;
+  String _deviceId;
+  ServerResponse _last;
+
+  bool parseResponse(const String& json, int code) {
+    StaticJsonDocument<1024> doc;
+    if (deserializeJson(doc, json)) {
+      _last.success = false;
+      _last.message = "JSON parse error";
+      return false;
+    }
+
+    _last.success = (code >= 200 && code < 300);
+    _last.message = doc["message"] | "";
+
+    if (doc.containsKey("data")) {
+      JsonObject data = doc["data"];
+      _last.authorized = data["driverAuthorized"] | false;
+      _last.sessionId = data["sessionId"] | "";
+
+      if (data.containsKey("driver")) {
+        _last.driverName = (String)data["driver"]["firstName"] + " " + (String)data["driver"]["lastName"];
+      }
+    }
+
+    return _last.success;
+  }
 };

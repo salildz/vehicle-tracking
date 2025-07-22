@@ -3,40 +3,50 @@
 
 class MP3PlayerManager {
 public:
-  MP3PlayerManager() : mp3(nullptr), isBeeping(false), lastBeepTime(0) {}
+  MP3PlayerManager(uint8_t rxPin, uint8_t txPin, uint8_t volume = 20)
+    : _rx(rxPin), _tx(txPin), _volume(volume),
+      _mp3(nullptr), _isBeeping(false), _lastBeepTime(0) {}
 
-  void begin(HardwareSerial& serial) {
-    mp3 = &serial;
+  void begin() {
+    _serial = new HardwareSerial(1); // Serial1 kullanılıyor (UART1)
+    _serial->begin(9600, SERIAL_8N1, _rx, _tx);
     delay(500);
+    _mp3 = _serial;
+    setVolume(_volume);
   }
 
   void setVolume(uint8_t level) {
-    if (!mp3) return;
+    if (!_mp3) return;
     if (level > 30) level = 30;
     sendCommand(0x06, 0x00, level);
   }
 
   void playTrack(uint16_t trackNum) {
-    if (!mp3) return;
+    if (!_mp3) return;
     sendCommand(0x03, (uint8_t)(trackNum >> 8), (uint8_t)(trackNum & 0xFF));
   }
 
   void loopBeep() {
-    if (!isBeeping || millis() - lastBeepTime >= 2000) {
-      playTrack(2);
-      lastBeepTime = millis();
-      isBeeping = true;
+    if (!_mp3) return;
+    if (!_isBeeping || millis() - _lastBeepTime >= 2000) {
+      playTrack(2); // Beep track
+      _lastBeepTime = millis();
+      _isBeeping = true;
     }
   }
 
   void stopBeep() {
-    isBeeping = false;
+    _isBeeping = false;
   }
 
 private:
-  HardwareSerial* mp3;
-  bool isBeeping;
-  unsigned long lastBeepTime;
+  uint8_t _rx, _tx;
+  uint8_t _volume;
+
+  HardwareSerial* _serial;
+  HardwareSerial* _mp3;
+  bool _isBeeping;
+  unsigned long _lastBeepTime;
 
   void sendCommand(uint8_t cmd, uint8_t param1 = 0, uint8_t param2 = 0) {
     uint8_t buf[10] = {
@@ -47,7 +57,7 @@ private:
     sum = 0xFFFF - sum + 1;
     buf[7] = (uint8_t)(sum >> 8);
     buf[8] = (uint8_t)(sum & 0xFF);
-    mp3->write(buf, 10);
+    _mp3->write(buf, 10);
     delay(200);
   }
 };
