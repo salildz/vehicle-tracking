@@ -18,7 +18,7 @@ COPY . .
 RUN npm install -g ts-node-dev
 
 # Port'u expose et
-EXPOSE 5000
+EXPOSE 9040
 
 # Başlangıç komutu
 CMD ["ts-node-dev", "--respawn", "--transpile-only", "src/index.ts"]

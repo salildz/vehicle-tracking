@@ -6,7 +6,7 @@ let io: Server;
 export const initializeSocket = (httpServer: HttpServer) => {
   io = new Server(httpServer, {
     cors: {
-      origin: process.env.CLIENT_URL || "http://localhost:3000",
+      origin: process.env.CLIENT_URL || "http://localhost:9041",
       methods: ["GET", "POST"],
     },
   });

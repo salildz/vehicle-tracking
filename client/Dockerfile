@@ -12,7 +12,7 @@ RUN npm install
 COPY . .
 
 # Port'u expose et
-EXPOSE 3000
+EXPOSE 9041
 
 # Development modunda çalıştır
 CMD ["npm", "run", "dev"]

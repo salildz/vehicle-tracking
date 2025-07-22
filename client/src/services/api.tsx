@@ -1,6 +1,6 @@
 import axios, { type AxiosResponse, type InternalAxiosRequestConfig } from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = '/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -11,7 +11,7 @@ const api = axios.create({
 
 let isRefreshing = false;
 let refreshSubscribers: Array<(token: string) => void> = [];
-let retryCount = 0; // ✅ Retry counter ekle
+let retryCount = 0;
 
 const onRefreshed = (token: string) => {
   refreshSubscribers.forEach(callback => callback(token));

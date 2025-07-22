@@ -51,7 +51,7 @@ app.use(speedLimiter);
 // CORS configuration
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://127.0.0.1:3000", process.env.CLIENT_URL || "http://localhost:3000"],
+    origin: ["http://localhost:9041", "http://127.0.0.1:9041", process.env.CLIENT_URL || "http://localhost:9041"],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -109,7 +109,7 @@ app.use("*", (req, res) => {
 // Global error handler (must be last)
 app.use(globalErrorHandler);
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 9040;
 
 // Database connection and server startup
 const startServer = async () => {

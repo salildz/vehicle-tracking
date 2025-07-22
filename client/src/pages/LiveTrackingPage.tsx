@@ -151,7 +151,7 @@ const LiveTrackingPage: React.FC = () => {
 
     const initializeWebSocket = () => {
         try {
-            const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
+            const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:9040';
             socketRef.current = io(SOCKET_URL);
 
             socketRef.current.on('connect', () => {

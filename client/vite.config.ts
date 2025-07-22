@@ -5,14 +5,14 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   server: {
-    host: "0.0.0.0", // Docker için gerekli
-    port: 3000,
-    watch: {
-      usePolling: true, // Docker volume'lar için
-    },
-    hmr: {
-      host: "localhost",
-    },
+    host: "0.0.0.0", 
+    port: 9041,
+        proxy: {
+          "/api": {
+            target: "http://server:9040",
+          },
+        },
+    allowedHosts: ["localhost", "vehicle-tracking.yildizsalih.com"],
   },
   build: {
     outDir: "dist",
