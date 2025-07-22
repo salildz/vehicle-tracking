@@ -6,13 +6,21 @@ public:
   WifiManager(const char* ssid, const char* password)
     : _ssid(ssid), _password(password) {}
 
-  bool connect(uint32_t timeoutMs = 10000) {
+  bool connect(uint32_t timeoutMs = 15000) {
+    WiFi.mode(WIFI_OFF);
+    delay(1000);
     WiFi.mode(WIFI_STA);
+    WiFi.setSleep(false); // Power management kapat
+    
     WiFi.begin(_ssid, _password);
 
     unsigned long start = millis();
     while (WiFi.status() != WL_CONNECTED && millis() - start < timeoutMs) {
-      delay(250);
+      delay(500);
+      if (WiFi.status() == WL_CONNECT_FAILED) {
+        WiFi.disconnect();
+        WiFi.begin(_ssid, _password);
+      }
     }
 
     return WiFi.status() == WL_CONNECTED;
@@ -28,6 +36,17 @@ public:
 
   bool isConnected() const {
     return WiFi.status() == WL_CONNECTED;
+  }
+
+  String getConnectionStatus() const {
+    switch(WiFi.status()) {
+      case WL_CONNECTED: return "Connected";
+      case WL_NO_SSID_AVAIL: return "SSID not found";
+      case WL_CONNECT_FAILED: return "Connect failed";
+      case WL_CONNECTION_LOST: return "Connection lost";
+      case WL_DISCONNECTED: return "Disconnected";
+      default: return "Unknown (" + String(WiFi.status()) + ")";
+    }
   }
 
   String getIP() const {

@@ -27,7 +27,7 @@ public:
     doc["speed"]     = speed;
     doc["heading"]   = heading;
     doc["accuracy"]  = accuracy;
-    doc["timestamp"] = millis();
+/*     doc["timestamp"] = millis(); */
 
     if (rfidCardId.length() > 0)
       doc["rfidCardId"] = rfidCardId;
@@ -48,9 +48,17 @@ public:
     HTTPClient http;
     http.begin(_url);
     http.addHeader("Content-Type", "application/json");
+    http.setTimeout(5000);
+
+    Serial.printf("Sending to: %s\n", _url.c_str());
+    Serial.printf("Payload: %s\n", payload.c_str());
 
     int statusCode = http.POST(payload);
     String response = http.getString();
+    
+    Serial.printf("HTTP Status: %d\n", statusCode);
+    Serial.printf("Response: %s\n", response.c_str());
+    
     http.end();
 
     return parseResponse(response, statusCode);

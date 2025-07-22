@@ -8,7 +8,7 @@ struct SystemConfig {
   const char* DEVICE_ID     = "ESP32-001";
 
   // 🌍 Server
-  const char* SERVER_URL = "http://192.168.165.38:5000/api/device/gps-data";
+  const char* SERVER_URL = "http://vehicle-tracking.yildizsalih.com/api/device/gps-data";
 
   // 📍 GPS (UART)
   const int GPS_RX = 16;
@@ -25,7 +25,7 @@ struct SystemConfig {
   const int MP3_VOLUME = 24;
 
   // ⏱️ Sistem Zamanlamaları
-  const unsigned long SEND_INTERVAL_MS     = 2000;   // GPS veri gönderme süresi
+  const unsigned long SEND_INTERVAL_MS     = 5000;   // GPS veri gönderme süresi
   const unsigned long RFID_DEBOUNCE_MS     = 1000;   // Kart okuma aralığı
   const unsigned long NETWORK_TIMEOUT_MS   = 10000;  // WiFi bağlantı zaman aşımı
   const unsigned long SESSION_TIMEOUT_MS   = 43200000; // 12 saat
