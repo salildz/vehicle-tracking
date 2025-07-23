@@ -26,18 +26,18 @@ public:
     sendCommand(0x03, (uint8_t)(trackNum >> 8), (uint8_t)(trackNum & 0xFF));
   }
 
-  void loopBeep() {
+/*   void loopBeep() {
     if (!_mp3) return;
     if (!_isBeeping || millis() - _lastBeepTime >= 2000) {
       playTrack(2); // Beep track
       _lastBeepTime = millis();
       _isBeeping = true;
     }
-  }
+  } */
 
-  void stopBeep() {
+/*   void stopBeep() {
     _isBeeping = false;
-  }
+  } */
 
 private:
   uint8_t _rx, _tx;

@@ -44,6 +44,10 @@ public:
     return _last;
   }
 
+  bool isAuthorized() const {
+    return _last.authorized;
+  }
+
   bool sendRawJson(const String& payload) {
     HTTPClient http;
     http.begin(_url);
@@ -82,7 +86,7 @@ private:
 
     if (doc.containsKey("data")) {
       JsonObject data = doc["data"];
-      _last.authorized = data["driverAuthorized"] | false;
+      _last.authorized = data["sessionType"] == "authorized";
       _last.sessionId = data["sessionId"] | "";
 
       if (data.containsKey("driver")) {

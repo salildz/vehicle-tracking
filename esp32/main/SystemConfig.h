@@ -8,7 +8,7 @@ struct SystemConfig {
   const char* DEVICE_ID     = "ESP32-001";
 
   // 🌍 Server
-  const char* SERVER_URL = "http://vehicle-tracking.yildizsalih.com/api/device/gps-data";
+  const char* SERVER_URL = "http://192.168.165.38:9041/api/device/gps-data";
 
   // 📍 GPS (UART)
   const int GPS_RX = 16;
@@ -45,14 +45,11 @@ struct SystemConfig {
   const float GPS_MAX_HDOP     = 5.0;
 
   // 🔊 Ses Dosyası Numaraları (TF karttaki MP3 dosyaları)
-  const int TRACK_STARTUP         = 1;
-  const int TRACK_BEEP            = 2;
-  const int TRACK_UNAUTHORIZED    = 3;
+  const int TRACK_ENTRY           = 1;
+  const int TRACK_UNAUTHORIZED    = 2;
   const int TRACK_AUTHORIZED      = 4;
-  const int TRACK_ERROR           = 2;
-  const int TRACK_CONNECTED       = 4;
-  const int TRACK_WIFI_FAIL       = 2;
-  const int TRACK_DRIVER_CHANGED  = 4;
+  const int TRACK_ERROR           = 3;
+  const int TRACK_WIFI_FAIL       = 3;
 
   void print() const {
     Serial.println("📋 ==== CONFIGURATION ====");

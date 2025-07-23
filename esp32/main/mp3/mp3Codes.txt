@@ -1,4 +1,4 @@
 entry	=	0001.mp3	-	1 second
 continuousBeep	=	0002.mp3	-	1 second
-userNotAuthenticated	=	0003.mp3	-	1 second
+error	=	0003.mp3	-	1 second
 goodToGo	=	0004.mp3	-	4 second
