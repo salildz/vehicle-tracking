@@ -6,16 +6,15 @@ import { authenticateToken, requireRole } from "../middlewares/auth.middleware";
 
 const router = Router();
 
-// Tüm route'lar için authentication gerekli
 router.use(authenticateToken);
 
-// Tüm araçları listele
+// Get all vehicles
 router.get("/", VehicleController.getAll);
 
-// Aktif oturumları getir
+// Get active sessions
 router.get("/active-sessions", VehicleController.getActiveSessions);
 
-// Yeni araç ekle
+// Add new vehicle (only admin or operator)
 router.post(
   "/",
   requireRole(["admin", "operator"]),
@@ -32,7 +31,7 @@ router.post(
   VehicleController.create
 );
 
-// Araç güncelle
+// Update vehicle
 router.put(
   "/:id",
   requireRole(["admin", "operator"]),
@@ -41,7 +40,7 @@ router.put(
   VehicleController.update
 );
 
-// Araç sil
+// Delete vehicle
 router.delete(
   "/:id",
   requireRole(["admin"]),
@@ -50,7 +49,7 @@ router.delete(
   VehicleController.delete
 );
 
-// Araç istatistikleri
+// Vehicle statistics
 router.get(
   "/:id/stats",
   [param("id").isInt().withMessage("Valid vehicle ID is required")],

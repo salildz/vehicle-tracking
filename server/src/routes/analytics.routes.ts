@@ -6,7 +6,6 @@ import { validate } from "../middlewares/validation.middleware";
 
 const router = Router();
 
-// Authentication required for all routes
 router.use(authenticateToken);
 
 // Dashboard statistics

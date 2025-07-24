@@ -6,13 +6,12 @@ import { authenticateToken, requireRole } from "../middlewares/auth.middleware";
 
 const router = Router();
 
-// Tüm route'lar için authentication gerekli
 router.use(authenticateToken);
 
-// Tüm sürücüleri listele
+// Get all drivers
 router.get("/", DriverController.getAll);
 
-// Yeni sürücü ekle (sadece admin veya operator)
+// Add new driver (only admin or operator)
 router.post(
   "/",
   requireRole(["admin", "operator"]),
@@ -26,7 +25,7 @@ router.post(
   DriverController.create
 );
 
-// Sürücü güncelle
+// Update driver
 router.put(
   "/:id",
   requireRole(["admin", "operator"]),
@@ -35,7 +34,7 @@ router.put(
   DriverController.update
 );
 
-// Sürücü sil
+// Delete driver
 router.delete(
   "/:id",
   requireRole(["admin"]),
@@ -44,7 +43,7 @@ router.delete(
   DriverController.delete
 );
 
-// Sürücü istatistikleri
+// Driver statistics
 router.get(
   "/:id/stats",
   [param("id").isInt().withMessage("Valid driver ID is required")],

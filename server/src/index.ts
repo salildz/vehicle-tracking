@@ -91,7 +91,7 @@ app.get("/health", (req, res) => {
   });
 });
 
-// Routes with appropriate rate limiting
+// Routes with rate limiting
 app.use("/api/auth", authLimiter, authRoutes);
 app.use("/api/device", deviceLimiter, deviceRoutes);
 app.use("/api/drivers", apiLimiter, driverRoutes);
@@ -107,7 +107,7 @@ app.use("*", (req, res) => {
   });
 });
 
-// Global error handler (must be last)
+// Global error handler
 app.use(globalErrorHandler);
 
 const PORT = process.env.PORT || 9040;
@@ -115,11 +115,9 @@ const PORT = process.env.PORT || 9040;
 // Database connection and server startup
 const startServer = async () => {
   try {
-    // Test database connection
     await sequelize.authenticate();
     logger.info("Database connection established successfully");
 
-    // Sync models (use alter in development, false in production)
     await sequelize.sync({
       alter: process.env.NODE_ENV === "development",
       force: false,

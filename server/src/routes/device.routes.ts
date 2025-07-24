@@ -6,7 +6,7 @@ import { deviceLimiter } from "../middlewares/security.middleware";
 
 const router = Router();
 
-// ANA ENDPOINT - GPS verisi + RFID
+// Main endpoint
 router.post(
   "/gps-data",
   deviceLimiter, // Rate limiting for device requests
@@ -24,7 +24,7 @@ router.post(
   DeviceController.receiveGPSData
 );
 
-//  ADMIN ENDPOINTS
+//  Admin endpoints
 router.get("/active-sessions", DeviceController.getActiveSessions);
 
 router.post(
@@ -37,10 +37,10 @@ router.post(
   DeviceController.forceEndSession
 );
 
-// LEGACY ENDPOINTS (Deprecated but kept for backward compatibility)
+/*
 router.post("/validate-rfid", DeviceController.validateRfid);
 router.post("/start-session", DeviceController.startSession);
 router.post("/log-location", DeviceController.logLocation);
-router.post("/end-session", DeviceController.endSession);
+router.post("/end-session", DeviceController.endSession); */
 
 export default router;

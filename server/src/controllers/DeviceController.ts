@@ -19,7 +19,7 @@ interface GPSData {
 
 export class DeviceController {
   /**
-   * ✅ ANA ENDPOINT - GPS verisi + RFID durumu
+   * ANA ENDPOINT - GPS verisi + RFID durumu
    * Cihazdan sürekli gelen ana veri endpoint'i
    */
   static async receiveGPSData(req: Request, res: Response) {
@@ -171,7 +171,7 @@ export class DeviceController {
         },
       });
     } catch (error) {
-      console.error("❌ GPS data processing error:", error);
+      console.error("GPS data processing error:", error);
       return res.status(500).json({
         success: false,
         message: "Failed to process GPS data",
@@ -181,7 +181,7 @@ export class DeviceController {
   }
 
   /**
-   * 🎯 Session yönetim logic'i
+   * Session yönetim logic'i
    */
   private static async manageSession(
     vehicle: any,
