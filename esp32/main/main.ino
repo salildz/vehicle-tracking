@@ -15,7 +15,6 @@ enum SystemState {
   UNAUTHORIZED_SESSION = 4
 };
 
-// Global objects
 SystemConfig config;
 GPSManager gps(config.GPS_RX, config.GPS_TX, config.GPS_BAUD);
 RFIDManager rfid(config.RFID_SS, config.RFID_RST);
