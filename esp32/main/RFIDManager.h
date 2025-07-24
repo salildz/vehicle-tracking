@@ -27,7 +27,7 @@ public:
     if (uid == _lastUID && (now - _lastReadTime < _debounceMs)) {
       return "";
     }
-
+    
     _lastUID = uid;
     _lastReadTime = now;
     return uid;

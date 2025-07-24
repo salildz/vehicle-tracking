@@ -4,8 +4,8 @@
 
 class WifiManager {
 public:
-  WifiManager(const char* ssid, const char* password)
-    : _ssid(ssid), _password(password), _lastConnectionAttempt(0), 
+  WifiManager(const char* ssid, const char* password, const int maxRetry)
+    : _ssid(ssid), _password(password), _maxRetry(maxRetry), _lastConnectionAttempt(0), 
       _connectionAttempts(0), _isInitialized(false) {}
 
   // Primary connection method
@@ -172,7 +172,7 @@ public:
   bool shouldReconnect() const {
     return !isConnected() && 
            (millis() - _lastConnectionAttempt > 10000) && // Wait 10s between attempts
-           (_connectionAttempts < 10); // Don't spam attempts
+           (_connectionAttempts < _maxRetry); // Don't spam attempts
   }
 
   // Reset connection statistics
@@ -264,6 +264,7 @@ public:
 private:
   const char* _ssid;
   const char* _password;
+  const int _maxRetry;
   unsigned long _lastConnectionAttempt;
   uint32_t _connectionAttempts;
   bool _isInitialized;

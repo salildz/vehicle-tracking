@@ -20,7 +20,7 @@ SystemConfig config;
 GPSManager gps(config.GPS_RX, config.GPS_TX, config.GPS_BAUD);
 RFIDManager rfid(config.RFID_SS, config.RFID_RST);
 MP3PlayerManager mp3(config.MP3_RX, config.MP3_TX, config.MP3_VOLUME);
-WifiManager wifi(config.WIFI_SSID, config.WIFI_PASSWORD);
+WifiManager wifi(config.WIFI_SSID, config.WIFI_PASSWORD, config.WIFI_RETRY_MAX);
 DataSender sender(config.SERVER_URL, config.DEVICE_ID);
 WatchdogManager watchdog(30);
 
@@ -240,6 +240,7 @@ void sendGPSData() {
 
 void handleRFIDCard(const String& cardId) {
   Serial.printf("RFID Card detected: %s\n", cardId.c_str());
+  mp3.playTrack(config.TRACK_CARD_READ);
   systemHealth.rfidReady = true;
 
   if (systemHealth.wifiConnected) {
